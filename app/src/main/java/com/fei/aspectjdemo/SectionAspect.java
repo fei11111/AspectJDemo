@@ -30,16 +30,31 @@ import androidx.fragment.app.Fragment;
  */
 //@Aspect 标志切面的处理类
 //@Pointcut标志切点是谁，后面跟符合切点的规则。
+// 1> 包名+类名+方法名来确定切点规则:
+//2>以注解来确定切点规则的:
 @Aspect
 public class SectionAspect {
 
-//    @Pointcut
-//            ("execution(* com.game.xiangxuemytest.aspectj.AspectJActivity.aspectTest(..))")
-//    public void pointActionMethod() {}
+    @Pointcut
+            ("execution(* *..**Activity+.on**(..))")
+    public void pointActionMethod() {
+    }
+
+    @Around("pointActionMethod()")
+    public Object testBefore(ProceedingJoinPoint joinPoint) throws Throwable {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        String className = joinPoint.getThis().getClass().getSimpleName();
+        Log.e(className, methodSignature.getName());
+        return joinPoint.proceed();
+    }
+
+//    @Before("execution(* *..MainActivity+.on**(..))")
+//    public void onActivityCreateBefore(ProceedingJoinPoint joinPoint) {
+//        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+//        String className = joinPoint.getThis().getClass().getSimpleName();
 //
-//    @Before("pointActionMethod()")
-//    public void testBefore(){
-//        Log.i("AspectJActivity","AspectUtil method1 Before");
+//        Log.e("TAG", "class:" + className);
+//        Log.e("TAG", "method:" + methodSignature.getName());
 //    }
 
     /**
@@ -47,7 +62,6 @@ public class SectionAspect {
      */
     @Pointcut("execution(@com.fei.aspectjdemo.CheckNet * *(..))")
     public void checkBehavior() {
-        Log.e("tag", "checkBehavior");
     }
 
     Long time;
